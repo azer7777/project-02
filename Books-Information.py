@@ -8,12 +8,12 @@ url_category = "http://books.toscrape.com/catalogue/category/books/travel_2/inde
 page = requests.get(url_category)
 soup = BeautifulSoup(page.content, 'html.parser')
 
-urls =[]
+url_category_books =[]
 
 for link in soup.select(('.product_pod a')):
-    urls.append(link.get('href'))
+    url_category_books.append(url + "catalogue/" + ((link.get('href').strip('../../../'))))
 
-urls
+url_category_books
 
 
 def scrap_one_book(url_book):
