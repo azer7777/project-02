@@ -15,8 +15,8 @@ for link in soup.select(('.product_pod a')):
 
 url_category_books
 
-
-def scrap_one_book(url_book):
+for url_book in url_category_books:
+    def scrap_one_book(url_book):
     url_book = "http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
     page = requests.get(url_book)
     soup = BeautifulSoup(page.content, 'html.parser')
