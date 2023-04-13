@@ -19,7 +19,7 @@ def one_category_all_books_urls(url):
     return list_url_category_books
 
     
-def scrap_one_book_title(url_book):    
+def scrap_one_book_title():    
         
         #list the titles
         list_title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
