@@ -12,20 +12,20 @@ def extract_page(url):
 
 
 def one_category_all_books_urls(url_category):
-    url_category_books =[]
+    list_url_category_books =[]
     soup = extract_page(url_category)
     for link in soup.select(('.product_pod a')):
-        url_category_books.append(url_main + "catalogue/" + ((link.get('href').strip('../../../'))))
-
+        list_url_category_books.append(url_main + "catalogue/" + ((link.get('href').strip('../../../'))))
+    return list_url_category_books
 
     
 def scrap_one_book(url_book):
         
         soup = extract_page(url_book)
-
-        title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
+        #list the titles
+        list_title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
         "number_available", "product_description" ,"category", "review_rating", "image_url"]
-
+        #create variables for the descriptions
         product_page_url = url_book
         upc = (soup.find_all("td")[0]).text
         book_title = soup.h1.string
@@ -37,19 +37,17 @@ def scrap_one_book(url_book):
         review_rating = soup.find('p', class_='star-rating').get('class')[1] + ' stars'
         image = (soup.find_all("img")[0])
         image_url = "books.toscrape.com"+image.get('src')
-
-        description = [product_page_url, upc, book_title, price_including_tax, price_excluding_tax,
+        #list the desriptions
+        list_description = [product_page_url, upc, book_title, price_including_tax, price_excluding_tax,
         number_available, product_description , category, review_rating, image_url]
-        return (title, description)
+        return (list_title, list_description)
 
 
-
-
-
-def transfer_data_by_category('file_name_category'):
-    with open('file_name_category', 'w') as csv_file:
+def transfer_data_by_category(file_name_category, a, b):
+    with open(file_name_category, 'w') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
-        for t, d in zip(title, description):
+        for t, d in zip(a, b):
             writer.writerow([t, d])
 
-    
+
+
