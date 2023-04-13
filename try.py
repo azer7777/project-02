@@ -4,6 +4,7 @@ import csv
 
 url_main = "http://books.toscrape.com/"
 url_travel = "http://books.toscrape.com/catalogue/category/books/travel_2/index.html"
+header = 1
 
 def extract_page(url):
    page = requests.get(url)
@@ -18,14 +19,13 @@ def one_category_all_books_urls(url):
         list_url_category_books.append(url_main + "catalogue/" + ((link.get('href').strip('../../../'))))
     return list_url_category_books
 
-    
-def scrap_one_book_title():    
+      
         
-        #list the titles
-        list_title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
-        "number_available", "product_description" ,"category", "review_rating", "image_url"]
+#list the titles
+list_title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
+"number_available", "product_description" ,"category", "review_rating", "image_url"]
 
-        return list_title
+    
     
     
 def scrap_one_book_description(url_book):
@@ -52,13 +52,15 @@ def scrap_one_book_description(url_book):
 def transfer_data_by_category(a, b):
     with open('data.csv', 'a') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
+        writer.writerow([header])
         for t, d in zip(a, b):
             writer.writerow([t, d])
+            csv_file.close
+    
 
-
-url_travel_all_books = one_category_all_books_urls(url_travel)
 
 for urlbook in one_category_all_books_urls(url_travel):
-    scrap_book_title = scrap_one_book_title(urlbook)
     scrap_book_description = scrap_one_book_description(urlbook)
-    transfer_data_by_category(scrap_book_title, scrap_book_description)
+    transfer_data_by_category(list_title, scrap_book_description)
+    header += 1
+    

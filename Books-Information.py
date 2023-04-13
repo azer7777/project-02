@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 import csv
 
 url_main = "http://books.toscrape.com/"
-
+url_travel = "http://books.toscrape.com/catalogue/category/books/travel_2/index.html"
+header = 1
 
 def extract_page(url):
    page = requests.get(url)
@@ -11,20 +12,25 @@ def extract_page(url):
    return soup
 
 
-def one_category_all_books_urls(url_category):
+def one_category_all_books_urls(url):
     list_url_category_books =[]
-    soup = extract_page(url_category)
+    soup = extract_page(url)
     for link in soup.select(('.product_pod a')):
         list_url_category_books.append(url_main + "catalogue/" + ((link.get('href').strip('../../../'))))
     return list_url_category_books
 
-    
-def scrap_one_book(url_book):
+      
         
+#list the titles
+list_title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
+"number_available", "product_description" ,"category", "review_rating", "image_url"]
+
+    
+    
+    
+def scrap_one_book_description(url_book):
         soup = extract_page(url_book)
-        #list the titles
-        list_title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
-        "number_available", "product_description" ,"category", "review_rating", "image_url"]
+
         #create variables for the descriptions
         product_page_url = url_book
         upc = (soup.find_all("td")[0]).text
@@ -40,14 +46,23 @@ def scrap_one_book(url_book):
         #list the desriptions
         list_description = [product_page_url, upc, book_title, price_including_tax, price_excluding_tax,
         number_available, product_description , category, review_rating, image_url]
-        return (list_title, list_description)
+        return list_description
 
 
-def transfer_data_by_category(file_name_category, a, b):
-    with open(file_name_category, 'w') as csv_file:
+def transfer_data_by_category(a, b):
+    with open('data.csv', 'a') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
+        writer.writerow([header])
         for t, d in zip(a, b):
             writer.writerow([t, d])
+            csv_file.close
+    
+
+
+for urlbook in one_category_all_books_urls(url_travel):
+    scrap_book_description = scrap_one_book_description(urlbook)
+    transfer_data_by_category(list_title, scrap_book_description)
+    header += 1
 
 
 
