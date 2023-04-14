@@ -15,7 +15,7 @@ def extract_page(url):
 def one_category_all_books_urls(url):
     list_url_category_books =[]
     soup = extract_page(url)
-    for link in soup.select(('.product_pod a')):
+    for link in soup.select(('.product_pod .image_container a')):
         list_url_category_books.append(url_main + "catalogue/" + ((link.get('href').strip('../../../'))))
     return list_url_category_books
 
