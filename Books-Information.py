@@ -65,6 +65,6 @@ for urlbook in one_category_all_books_urls(url_travel):
     transfer_data_by_category(list_title, scrap_book_description)
     header += 1
     
-d
+
 
 
