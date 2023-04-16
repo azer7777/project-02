@@ -3,31 +3,53 @@ from bs4 import BeautifulSoup
 import csv
 
 url_main = "http://books.toscrape.com/"
-url_travel = "http://books.toscrape.com/catalogue/category/books/travel_2/index.html"
 
+
+#list the titles
+list_title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
+"number_available", "product_description" ,"category", "review_rating", "image_url"]
 header = 1
+
+
 
 def extract_page(url):
    page = requests.get(url)
    soup = BeautifulSoup(page.content, 'html.parser')
    return soup
 
+def check_next_page(url):
+    soup = extract_page(url)
+    nextpage = soup.select('.next a')
+    return nextpage
 
-def one_category_all_books_urls(url):
+
+
+def next_page(url, indexurl):   
+    nextpage = check_next_page(url)
+    for link in nextpage:
+        next_page = link.get('href')
+    url_next_page = indexurl.replace("index.html", "") + next_page     
+    return url_next_page
+
+
+
+def one_category_all_books_urls(url, indexurl):
     list_url_category_books =[]
     soup = extract_page(url)
     for link in soup.select(('.product_pod .image_container a')):
-        list_url_category_books.append(url_main + "catalogue/" + ((link.get('href').strip('../../../'))))
+        list_url_category_books.append(url_main + "catalogue/" + ((link.get('href').replace('../../../', ''))))
+        
+    while check_next_page(url) != []:
+          nextpageurl = next_page(url, indexurl)
+          soup = extract_page(nextpageurl)
+          for link in soup.select(('.product_pod .image_container a')):
+              list_url_category_books.append(url_main + "catalogue/" + ((link.get('href').replace('../../../', ''))))
+          url = nextpageurl
+                                                         
     return list_url_category_books
 
-      
-        
-#list the titles
-list_title = ["product_page_url",  "universal_ product_code (upc)", "title", "price_including_tax", "price_excluding_tax",
-"number_available", "product_description" ,"category", "review_rating", "image_url"]
 
-    
-    
+  
     
 def scrap_one_book_description(url_book):
         soup = extract_page(url_book)
@@ -60,7 +82,7 @@ def transfer_data_by_category(a, b):
     
 
 
-for urlbook in one_category_all_books_urls(url_travel):
+for urlbook in one_category_all_books_urls():
     scrap_book_description = scrap_one_book_description(urlbook)
     transfer_data_by_category(list_title, scrap_book_description)
     header += 1
