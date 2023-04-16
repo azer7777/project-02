@@ -1,6 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+import os
+
+
 
 url_main = "http://books.toscrape.com/"
 
@@ -16,6 +19,15 @@ def extract_page(url):
    page = requests.get(url)
    soup = BeautifulSoup(page.content, 'html.parser')
    return soup
+
+def all_categories_urls(url_main):    
+    list_url_categories =[]
+    soup = extract_page(url_main)
+    for link in soup.select(('.nav ul a')):
+        list_url_categories.append(url_main + ((link.get('href').replace('../../../', ''))))
+    return list_url_categories
+
+
 
 def check_next_page(url):
     soup = extract_page(url)
@@ -69,11 +81,28 @@ def scrap_one_book_description(url_book):
         #list the desriptions
         list_description = [product_page_url, upc, book_title, price_including_tax, price_excluding_tax,
         number_available, product_description , category, review_rating, image_url]
+    
         return list_description
 
+def category_name(url_book):
+        soup = extract_page(url_book)
+        categoryName = ((soup.find_all("a")[3]).text)+".csv"
 
-def transfer_data_by_category(a, b):
-    with open('data.csv', 'a') as csv_file:
+        return categoryName
+
+
+
+
+def create_path(file_name):
+    folder_name = 'books_info'
+    if not os.path.exists(folder_name):
+        os.mkdir(folder_name)
+    path = os.path.join(folder_name, file_name)
+    return path
+
+
+def transfer_data_by_category(path, a, b):
+    with open(path, 'a') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
         writer.writerow([header])
         for t, d in zip(a, b):
@@ -81,11 +110,13 @@ def transfer_data_by_category(a, b):
             csv_file.close
     
 
-
-for urlbook in one_category_all_books_urls():
-    scrap_book_description = scrap_one_book_description(urlbook)
-    transfer_data_by_category(list_title, scrap_book_description)
-    header += 1
+for urlcategory in all_categories_urls(url_main):
+    for urlbook in one_category_all_books_urls(urlcategory, urlcategory):
+        scrap_book_description = scrap_one_book_description(urlbook)
+        file_name = category_name(urlbook)
+        path = create_path(file_name)
+        transfer_data_by_category(path, list_title, scrap_book_description)
+        header += 1
     
 
 
