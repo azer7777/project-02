@@ -82,9 +82,3 @@ for urlbook in one_category_all_books_urls(url_fantasy):
     scrap_book_description = scrap_one_book_description(urlbook)
     transfer_data_by_category(list_title, scrap_book_description)
     header += 1
-
-
-    
-
-
-
