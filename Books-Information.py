@@ -84,6 +84,8 @@ def scrap_one_book_description(url_book):
     
         return list_description
 
+
+
 def category_name(url_book):
         soup = extract_page(url_book)
         categoryName = ((soup.find_all("a")[3]).text)+".csv"
@@ -96,7 +98,7 @@ def category_name(url_book):
 def create_path(file_name):
     folder_name = 'books_info'
     if not os.path.exists(folder_name):
-        os.mkdir(folder_name)
+        os.makedirs(folder_name)
     path = os.path.join(folder_name, file_name)
     return path
 
@@ -107,17 +109,17 @@ def transfer_data_by_category(path, a, b):
         writer.writerow([header])
         for t, d in zip(a, b):
             writer.writerow([t, d])
-            csv_file.close
+            
     
 
-for urlcategory in all_categories_urls(url_main):
-    for urlbook in one_category_all_books_urls(urlcategory, urlcategory):
-        scrap_book_description = scrap_one_book_description(urlbook)
-        file_name = category_name(urlbook)
+for urlCategory in all_categories_urls(url_main):
+    for urlBook in one_category_all_books_urls(urlCategory, urlCategory):
+        scrap_book_description = scrap_one_book_description(urlBook)
+        file_name = category_name(urlBook)
         path = create_path(file_name)
         transfer_data_by_category(path, list_title, scrap_book_description)
         header += 1
-    
+    header = 1
 
 
 
