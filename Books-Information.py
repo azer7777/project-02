@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import os
-
+import urllib3
 
 
 url_main = "http://books.toscrape.com/"
@@ -73,7 +73,7 @@ def scrap_one_book_description(url_book):
         price_including_tax = (soup.find_all("td")[2]).text
         price_excluding_tax = (soup.find_all("td")[3]).text
         number_available = (soup.find_all("td")[5]).text
-        product_description = (soup.find_all("p")[3]).text
+        product_description = ((soup.find_all("p")[3]).text)
         category = (soup.find_all("a")[3]).text
         review_rating = soup.find('p', class_='star-rating').get('class')[1] + ' stars'
         image = (soup.find_all("img")[0])
@@ -104,7 +104,7 @@ def create_path(file_name):
 
 
 def transfer_data_by_category(path, a, b):
-    with open(path, 'a') as csv_file:
+    with open(path, 'a', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
         writer.writerow([header])
         for t, d in zip(a, b):
