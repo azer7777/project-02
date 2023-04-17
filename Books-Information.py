@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import os
-import urllib3
+
 
 
 url_main = "http://books.toscrape.com/"
