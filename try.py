@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import os
-
+import re
 
 
 url_main = "http://books.toscrape.com/"
@@ -120,8 +120,9 @@ def get_image_url(url_book):
 
 def book_name(url_book):
         soup = extract_page(url_book)
-        book_name =  soup.h1.string
-        return book_name
+        book_name =  (soup.h1.string)
+        image_name = re.sub("[^A-Za-z0-9]", "", book_name)
+        return image_name
 
 
 
@@ -129,7 +130,7 @@ def book_name(url_book):
 for url_category in all_categories_urls(url_main):
     for urlbook in one_category_all_books_urls(url_category, url_category):
         image_url = get_image_url(urlbook)
-        image_name = (book_name(urlbook)[:30]).replace(':', '')
+        image_name = (book_name(urlbook))
         path_image = (create_path("image",image_name)) + '.jpg'
         with open(path_image, 'wb') as jpg_file:
             res = requests.get(image_url)
