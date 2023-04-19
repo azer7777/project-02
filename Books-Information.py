@@ -125,7 +125,7 @@ def book_name(url_book):
 
 
     
-
+# allow us to get all data we need
 for url_category in all_categories_urls(url_main):
     for urlBook in one_category_all_books_urls(url_category, url_category):
         book_description = one_book_description(urlBook)
@@ -135,7 +135,7 @@ for url_category in all_categories_urls(url_main):
         header += 1
     header = 1
 
-
+# allow us to get all the images we need
 for url_category in all_categories_urls(url_main):
     for urlbook in one_category_all_books_urls(url_category, url_category):
         image_url = get_image_url(urlbook)
