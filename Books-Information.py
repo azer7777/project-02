@@ -63,7 +63,7 @@ def one_category_all_books_urls(url, indexurl):
 
   
     
-def scrap_one_book_description(url_book):
+def one_book_description(url_book):
         soup = extract_page(url_book)
 
         #create variables for the descriptions
@@ -77,7 +77,7 @@ def scrap_one_book_description(url_book):
         category = (soup.find_all("a")[3]).text
         review_rating = soup.find('p', class_='star-rating').get('class')[1] + ' stars'
         image = (soup.find_all("img")[0])
-        image_url = "books.toscrape.com"+image.get('src')
+        image_url = "https://books.toscrape.com"+((image.get('src')).replace('../..', ''))
         #list the desriptions
         list_description = [product_page_url, upc, book_title, price_including_tax, price_excluding_tax,
         number_available, product_description , category, review_rating, image_url]
@@ -128,7 +128,7 @@ def book_name(url_book):
 
 for url_category in all_categories_urls(url_main):
     for urlBook in one_category_all_books_urls(url_category, url_category):
-        book_description = scrap_one_book_description(urlBook)
+        book_description = one_book_description(urlBook)
         file_name = category_name(urlBook)
         path = create_path("books_info", file_name)
         transfer_data_by_category(path, list_title, book_description)
