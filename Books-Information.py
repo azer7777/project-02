@@ -108,7 +108,15 @@ def transfer_data_by_category(path, a, b):
         writer.writerow([header])
         for t, d in zip(a, b):
             writer.writerow([t, d])
-            
+
+def tranfer_image(path):
+    with open(path, 'wb') as jpg_file:
+            res = requests.get(image_url)
+            jpg_file.write(res.content)
+    
+                
+
+
 
 def get_image_url(url_book):
         soup = extract_page(url_book)
@@ -125,22 +133,16 @@ def book_name(url_book):
 
 
     
-# allow us to get all data we need
+# allow us to get all data and images we need
 for url_category in all_categories_urls(url_main):
     for urlBook in one_category_all_books_urls(url_category, url_category):
         book_description = one_book_description(urlBook)
         file_name = category_name(urlBook)
-        path = create_path("books_info", file_name)
-        transfer_data_by_category(path, list_title, book_description)
+        image_url = get_image_url(urlBook)
+        image_name = (book_name(urlBook))
+        path_data = create_path("books_info", file_name)
+        path_image = (create_path("image",image_name)) + '.jpg'
+        transfer_data_by_category(path_data, list_title, book_description)
+        tranfer_image(path_image)
         header += 1
     header = 1
-
-# allow us to get all the images we need
-for url_category in all_categories_urls(url_main):
-    for urlbook in one_category_all_books_urls(url_category, url_category):
-        image_url = get_image_url(urlbook)
-        image_name = (book_name(urlbook))
-        path_image = (create_path("image",image_name)) + '.jpg'
-        with open(path_image, 'wb') as jpg_file:
-            res = requests.get(image_url)
-            jpg_file.write(res.content)
