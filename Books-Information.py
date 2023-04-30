@@ -105,9 +105,9 @@ def create_path(folder_name, file_name):
 def transfer_data_by_category(path, a, b):
     with open(path, 'a', encoding='utf-8') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
-        writer.writerow([header])
-        for t, d in zip(a, b):
-            writer.writerow([t, d])
+        if header == 1:
+            writer.writerow(a)
+        writer.writerow(b)
 
 def tranfer_image(path):
     with open(path, 'wb') as jpg_file:
@@ -144,5 +144,5 @@ for url_category in all_categories_urls(url_main):
         path_image = (create_path("image",image_name)) + '.jpg'
         transfer_data_by_category(path_data, list_title, book_description)
         tranfer_image(path_image)
-        header += 1
+        header = 2
     header = 1
