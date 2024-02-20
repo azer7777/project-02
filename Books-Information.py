@@ -133,7 +133,7 @@ def book_name(url_book):
 
 
     
-# allow us to get all data and images we need
+# allows us to get all the data and images we need
 for url_category in all_categories_urls(url_main):
     for urlBook in one_category_all_books_urls(url_category, url_category):
         book_description = one_book_description(urlBook)
